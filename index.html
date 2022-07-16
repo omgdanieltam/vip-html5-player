@@ -12,6 +12,8 @@
 	var g_previous_idx = 0;
 	var g_looping = false;
 	var MAX_HISTORY = 10;
+	var g_current = 0;
+	var g_shuffle = true;
 
 	var scrubp = 0;
 	var is_dragging_scrubber = false;
@@ -107,7 +109,13 @@
 			return;
 
 		if (g_previous_idx >= (g_previous.length - 1)) {
-			g_previous.push (Math.floor (Math.random () * g_playlist.length));
+			if (g_shuffle) {
+				g_current = Math.floor (Math.random () * g_playlist.length);
+			}
+			else {
+				g_current += 1;
+			}
+			g_previous.push (g_current);
 			g_previous_idx = g_previous.length - 1;
 		}
 		else {
@@ -137,6 +145,8 @@
 		$('html, body').stop ().animate ({
 			scrollTop: trackelem.offset ().top - $('.control-bar').height ()
 		}, 1000);
+
+		g_current = trackid;
 	}
 
 	function loadNewPlaylist (playlist, track) {
@@ -200,6 +210,17 @@
 		$('audio').attr ('loop', g_looping);
 		$('#btn-loop i').toggleClass('fa-times', g_looping);
 		$('#btn-loop i').toggleClass('fa-repeat', !g_looping);
+	}
+
+	function toggleShuffle () {
+		g_shuffle = !g_shuffle;
+		if (g_shuffle) {
+			$('#btn-shuffle').css('color', '#FF9148');
+		}
+		else {
+			$('#btn-shuffle').css('color', '#808080');
+		}
+		
 	}
 
 	function populatePlaylistOptions () {
@@ -285,6 +306,10 @@
 
 		$('#btn-loop').click (function () {
 			toggleLooping ();
+		});
+
+		$('#btn-shuffle').click (function () {
+			toggleShuffle ();
 		});
 
 		$('#select-playlist').on ('change', function () {
@@ -595,6 +620,7 @@
 				<td id='btn-previous' class='control-button'><i class="fa fa-step-backward"></i></td>
 				<td id='btn-next' class='control-button'><i class="fa fa-step-forward"></i></td>
 				<td id='btn-loop' class='control-button'><i class="fa fa-repeat"></i></td>
+				<td id='btn-shuffle' class='control-button'><i class="fa fa-random"></i></td>
 				<td id='time-current'></td>
 				<td id='time-bar'><div id="scrubber-track"><div id="scrubber-progress"><div id="scrubber"></div></div></div></td>
 				<td id='time-remaining'></td>
