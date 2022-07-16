@@ -214,13 +214,18 @@
 
 	function toggleShuffle () {
 		g_shuffle = !g_shuffle;
+		toggleShuffleColor();
+
+		localStorage['shuffle'] = g_shuffle;
+	}
+
+	function toggleShuffleColor() {
 		if (g_shuffle) {
 			$('#btn-shuffle').css('color', '#FF9148');
 		}
 		else {
 			$('#btn-shuffle').css('color', '#808080');
 		}
-		
 	}
 
 	function populatePlaylistOptions () {
@@ -357,6 +362,18 @@
 		if (localStorage.getItem ('playlist') !== null) {
 			if (localStorage.getItem ('playlist') in PLAYLISTS)
 				playlist = localStorage.getItem ('playlist');
+		}
+
+		if (localStorage.getItem ('shuffle') !== null) {
+			let shuffle = localStorage.getItem('shuffle');
+			
+			if (shuffle === 'false') {
+				g_shuffle = false;
+			}
+			else {
+				g_shuffle =  true;
+			}
+			toggleShuffleColor();
 		}
 
 		// If hash is set, override playlist and track
